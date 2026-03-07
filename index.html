@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #1e1e1e;
+      --text: #dcddde;
+      --muted: #888;
+      --border: #333;
+      --surface: #2a2a2a;
+      --surface2: #313131;
+      --accent: #7c6af7;
+      --link: #8b9cf4;
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    body {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px 32px 96px;
+    }
+
+    /* ── Typography ── */
+    h1, h2, h3, h4, h5, h6 {
+      color: #fff;
+      line-height: 1.3;
+      font-weight: 600;
+      margin-top: 1.8em;
+      margin-bottom: 0.5em;
+    }
+    h1 { font-size: 2rem; margin-top: 0; }
+    h2 { font-size: 1.4rem; border-bottom: 1px solid var(--border); padding-bottom: 0.3em; }
+    h3 { font-size: 1.15rem; }
+    h4 { font-size: 1rem; color: #bbb; }
+
+    p { margin-bottom: 1em; color: var(--text); }
+
+    a { color: var(--link); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    strong { color: #fff; font-weight: 600; }
+    em { color: #c9b8ff; font-style: italic; }
+
+    /* ── Lists ── */
+    ul, ol { margin: 0.4em 0 1em 1.4em; }
+    li { margin-bottom: 0.25em; }
+    ul li::marker { color: var(--accent); }
+    ol li::marker { color: #888; font-weight: 500; }
+
+    /* ── Blockquote ── */
+    blockquote {
+      border-left: 3px solid var(--accent);
+      margin: 1.2em 0;
+      padding: 0.6em 1.2em;
+      background: var(--surface);
+      border-radius: 0 6px 6px 0;
+      color: #bbb;
+    }
+    blockquote p { margin: 0; }
+
+    /* ── Code ── */
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      background: var(--surface2);
+      color: #98d8a0;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+    pre {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px;
+      overflow-x: auto;
+      margin: 1.2em 0;
+    }
+    pre code {
+      background: none; border: none; padding: 0;
+      font-size: 0.88em; color: #a8d8ff; line-height: 1.65;
+    }
+
+    /* ── HR ── */
+    hr { border: none; border-top: 1px solid var(--border); margin: 2em 0; }
+
+    /* ── Table ── */
+    table { width: 100%; border-collapse: collapse; margin: 1.2em 0; font-size: 0.93em; }
+    th { background: var(--surface2); color: #c9b8ff; font-weight: 600; text-align: left; padding: 9px 14px; border: 1px solid var(--border); }
+    td { padding: 8px 14px; border: 1px solid var(--border); }
+    tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+    /* ── Images — Obsidian style ── */
+    /* Standard markdown images */
+    p > img, img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+      margin: 1.4em auto;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.5);
+    }
+
+    /* Obsidian wikilink images: ![[file.png]] ![[file.png|400]] ![[file.png|200x300]] */
+    .ob-image-wrap {
+      display: flex;
+      justify-content: center;
+      margin: 1.4em 0;
+    }
+    .ob-image-wrap img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.5);
+      margin: 0;
+    }
+
+    /* ── Obsidian callouts ── */
+    .callout {
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin: 1.2em 0;
+      border-left: 4px solid;
+    }
+    .callout-title {
+      font-weight: 600;
+      font-size: 0.9em;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .callout-note    { background: #1a2a3a; border-color: #5b9bd5; }
+    .callout-note    .callout-title { color: #5b9bd5; }
+    .callout-tip, .callout-hint { background: #1a2e1a; border-color: #4ade80; }
+    .callout-tip .callout-title, .callout-hint .callout-title { color: #4ade80; }
+    .callout-warning, .callout-caution { background: #2e2510; border-color: #fbbf24; }
+    .callout-warning .callout-title, .callout-caution .callout-title { color: #fbbf24; }
+    .callout-danger, .callout-error { background: #2e1010; border-color: #f87171; }
+    .callout-danger .callout-title, .callout-error .callout-title { color: #f87171; }
+    .callout-info    { background: #1a2535; border-color: #67e8f9; }
+    .callout-info    .callout-title { color: #67e8f9; }
+    .callout-abstract, .callout-summary { background: #1e1a2e; border-color: #a78bfa; }
+    .callout-abstract .callout-title, .callout-summary .callout-title { color: #a78bfa; }
+    .callout-body p { margin: 0; font-size: 0.95em; }
+
+    /* ── Obsidian tags ── */
+    .ob-tag {
+      display: inline-block;
+      background: var(--surface2);
+      color: var(--accent);
+      border-radius: 99px;
+      padding: 1px 10px;
+      font-size: 0.8em;
+      margin: 0 2px;
+    }
+
+    /* ── Obsidian wikilinks ── */
+    .ob-wikilink {
+      color: var(--link);
+      border-bottom: 1px dashed var(--link);
+      cursor: pointer;
+    }
+
+    /* ── Highlight ── */
+    mark {
+      background: rgba(255, 220, 80, 0.25);
+      color: #ffe066;
+      border-radius: 3px;
+      padding: 1px 3px;
+    }
+
+    /* ── Fade in ── */
+    body { animation: fadein 0.3s ease; }
+    @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+
+    /* ── Error state ── */
+    .err {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--muted);
+    }
+    .err code { font-size: 1em; color: #f87171; }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+
+<script>
+  marked.setOptions({ breaks: true, gfm: true });
+
+  const root = document.getElementById('root');
+  const params   = new URLSearchParams(window.location.search);
+  const base     = window.location.href.split('?')[0].replace(/[^/]*$/, '');
+  const htmlName = window.location.pathname.split('/').pop() || 'README.html';
+  const mdName   = params.has('file')
+    ? params.get('file').replace(/\.md$/i, '') + '.md'
+    : htmlName.replace(/\.html?$/i, '.md');
+  const mdUrl    = base + mdName;
+
+  // ── Obsidian pre-processing ──────────────────────────────────────────────
+
+  function preprocess(text) {
+    // 1. Highlight ==text==
+    text = text.replace(/==(.+?)==/g, '<mark>$1</mark>');
+
+    // 2. Tags  #tagname
+    text = text.replace(/(^|\s)#([a-zA-Z][\w/-]+)/g, '$1<span class="ob-tag">#$2</span>');
+
+    // 3. Callouts  > [!type] Title
+    text = text.replace(
+      /^> \[!(\w+)\]([-+]?)(.*)\n((?:>.*\n?)*)/gm,
+      (_, type, fold, title, body) => {
+        const t = type.toLowerCase();
+        const icons = { note:'📝', tip:'💡', hint:'💡', warning:'⚠️', caution:'⚠️',
+                        danger:'🔥', error:'🔥', info:'ℹ️', abstract:'📋', summary:'📋' };
+        const icon = icons[t] || '📌';
+        const bodyText = body.replace(/^>\s?/gm, '').trim();
+        return `<div class="callout callout-${t}"><div class="callout-title">${icon} ${title.trim() || type}</div><div class="callout-body">\n\n${bodyText}\n\n</div></div>\n`;
+      }
+    );
+
+    // 4. Obsidian image embeds FIRST — must run before wikilink step eats [[...]]
+    //    Handles: ![[img.png]]  ![[img.png|300]]  ![[img.png|200x150]]
+    text = text.replace(/!\[\[([^\]]+)\]\]/g, (_, inner) => {
+      const [fileRaw, sizeRaw] = inner.split('|');
+      const file = fileRaw.trim();
+      const src  = /^https?:\/\//.test(file) ? file : base + file.split('/').map(encodeURIComponent).join('/');
+
+      let style = '';
+      if (sizeRaw) {
+        const s = sizeRaw.trim();
+        if (/^\d+x\d+$/.test(s)) {
+          const [w, h] = s.split('x');
+          style = `width:${w}px;height:${h}px;object-fit:cover;`;
+        } else if (/^\d+$/.test(s)) {
+          style = `width:${s}px;`;
+        }
+      }
+
+      return `\n\n<div class="ob-image-wrap"><img src="${src}" alt="${file}" style="${style}" loading="lazy"></div>\n\n`;
+    });
+
+    // 5. Wikilinks  [[Page]] or [[Page|Alias]]
+    text = text.replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, (_, page, alias) => {
+      const label = alias || page;
+      return `<span class="ob-wikilink" title="${page}">${label}</span>`;
+    });
+
+    return text;
+  }
+
+  // ── Load & render ────────────────────────────────────────────────────────
+
+  async function load() {
+    try {
+      const res = await fetch(mdUrl + '?t=' + Date.now());
+      if (!res.ok) throw new Error(`${res.status}`);
+      let text = await res.text();
+
+      // Strip YAML front matter
+      text = text.replace(/^---[\s\S]*?---\n?/, '');
+
+      document.title = mdName.replace(/\.md$/i, '');
+
+      text = preprocess(text);
+      root.innerHTML = marked.parse(text);
+    } catch (e) {
+      root.innerHTML = `<div class="err">
+        <p style="font-size:2em;margin-bottom:12px">📄</p>
+        <p>Could not load <code>${mdName}</code></p>
+        <p style="margin-top:8px;font-size:.85em">Make sure the file exists in the same folder and you're serving via HTTP.</p>
+      </div>`;
+    }
+  }
+
+  load();
+
+  // Auto-reload: re-fetch every 2s and update if content changed
+  let lastContent = '';
+  setInterval(async () => {
+    try {
+      const res = await fetch(mdUrl + '?t=' + Date.now());
+      if (!res.ok) return;
+      const text = await res.text();
+      if (text !== lastContent) {
+        lastContent = text;
+        let t = text.replace(/^---[\s\S]*?---\n?/, '');
+        t = preprocess(t);
+        const scroll = root.scrollTop;
+        root.innerHTML = marked.parse(t);
+        root.scrollTop = scroll;
+      }
+    } catch {}
+  }, 2000);
+</script>
+</body>
+</html>
